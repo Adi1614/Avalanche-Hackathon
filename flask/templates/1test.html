@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            min-height: 100vh;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .input-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .input-section,
+        .display-section {
+            background: #2d2d2d;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #7c3aed;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #7c3aed;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            background: #363636;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #a78bfa;
+            font-weight: 500;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1a1a1a;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+        }
+
+        button {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #6d28d9;
+            transform: translateY(-1px);
+        }
+
+        .schedule-container {
+            height: calc(100vh - 4rem);
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .schedule-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .schedule-container::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        .schedule-container::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        .course-item,
+        .assignment-item {
+            background: #363636;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .deadline {
+            color: #f87171;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .study-block {
+            background: #3b3b3b;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+
+        .study-block h3 {
+            color: #10b981;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            color: #a78bfa;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .generate-btn:hover {
+            background: linear-gradient(135deg, #6d28d9, #5b21b6);
+        }
+
+        .edit-form {
+            display: none;
+            background: #363636;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .edit-form input,
+        .edit-form select {
+            margin-bottom: 1rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+            background: #363636;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .user-profile img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #7c3aed;
+            object-fit: cover;
+            background: #4b5563;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .user-profile input {
+            display: none;
+        }
+
+        .user-profile label {
+            margin-top: 1rem;
+            background: #7c3aed;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .user-profile label:hover {
+            background: #6d28d9;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .input-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calendar-button, .timer {
+            float: right;
+            background-color: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 11px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .calendar-button:hover {
+            background-color: #0056b3;
+        }
+
+        .left-side {
+            float: right;
+        }
+
+
+        .timer:hover {
+            background-color: #0056b3;
+        }
+
+        .left-side {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h1>Study Planner
+                <a href="./index.html">
+                    <div class="left-side"><button class="calendar-button" onclick="openCalendar()">📅 Calendar</button>
+                    </div>
+                </a>
+
+                <a href="">
+                    <div class="left-side"><button class="timer" onclick="openCalendar()">📅 Timer</button>
+                    </div>
+                </a>
+
+            </h1>
+
+            <!-- Course Form -->
+            <div class="form-group">
+                <label>Add Course</label>
+                <input type="text" id="courseName" placeholder="Course Name">
+                <button onclick="addCourse()">Add Course</button>
+            </div>
+
+            <!-- Assignment Form -->
+            <div class="form-group">
+                <label>Add Assignment</label>
+                <select id="courseSelect">
+                    <option value="">Select Course</option>
+                </select>
+                <input type="text" id="assignmentName" placeholder="Assignment Name">
+                <input type="datetime-local" id="assignmentDeadline">
+                <button onclick="addAssignment()">Add Assignment</button>
+            </div>
+
+            <!-- Exam Form -->
+            <div class="form-group">
+                <label>Add Exam</label>
+                <select id="examCourseSelect">
+                    <option value="">Select Course</option>
+                </select>
+                <input type="datetime-local" id="examDate">
+                <button onclick="addExam()">Add Exam</button>
+            </div>
+
+            <!-- Edit Schedule Button -->
+            <div class="form-group">
+                <button onclick="openEditScheduleForm()">Edit Schedule</button>
+            </div>
+
+            <!-- Edit Schedule Form -->
+            <div class="edit-form" id="editScheduleForm">
+                <h2>Edit Study Block</h2>
+                Course:
+                <select id="editStudyBlockCourse">
+                    <option value="">Select Course</option>
+                </select>
+                Date:
+                <input type="date" id="editStudyBlockDate">
+                Study hours:
+                <input type="number" id="editStudyBlockHours" min="1" max="8" placeholder="Study Hours">
+                Assignment:
+                <input type="text" id="editStudyBlockTask" placeholder="Task Description">
+                <button onclick="saveEditedStudyBlock()">Save Changes</button>
+            </div>
+
+            <button onclick="generateSchedule()" class="generate-btn">Generate Study Schedule</button>
+        </div>
+
+        <div class="display-section">
+            <div class="user-profile">
+                <img id="userImage" src="https://via.placeholder.com/100?text=Add+Profile" alt="Add Profile">
+                <input type="file" id="uploadImage" accept="image/*" onchange="updateProfileImage(event)">
+                <label for="uploadImage" id="editLabel">Add Profile</label>
+            </div>
+
+            <h1>Your Schedule</h1>
+            <div class="schedule-container" id="scheduleContainer">
+                <!-- Schedule display -->
+            </div>
+            <button onclick="saveDataToBackend()">Save Data</button>
+        </div>
+    </div>
+    <script>
+
+        let courses = [];
+        let assignments = [];
+        let exams = [];
+        let studyBlocks = [];
+        let currentEditStudyBlockIndex = -1;
+
+        function addCourse() {
+            const courseName = document.getElementById('courseName').value.trim();
+            if (!courseName) {
+                alert('Please enter a course name');
+                return;
+            }
+
+            // Check if course already exists
+            if (courses.some(course => course.name.toLowerCase() === courseName.toLowerCase())) {
+                alert('This course already exists');
+                return;
+            }
+
+            courses.push({
+                id: Date.now(),
+                name: courseName
+            });
+
+            updateCourseSelects();
+            document.getElementById('courseName').value = '';
+            updateScheduleDisplay();
+        }
+
+        function addAssignment() {
+            const courseId = document.getElementById('courseSelect').value;
+            const assignmentName = document.getElementById('assignmentName').value.trim();
+            const deadline = document.getElementById('assignmentDeadline').value;
+
+            if (!courseId) {
+                alert('Please select a course');
+                return;
+            }
+            if (!assignmentName) {
+                alert('Please enter an assignment name');
+                return;
+            }
+            if (!deadline) {
+                alert('Please select a deadline');
+                return;
+            }
+
+            assignments.push({
+                id: Date.now(),
+                courseId: parseInt(courseId),
+                name: assignmentName,
+                deadline: new Date(deadline)
+            });
+
+            document.getElementById('assignmentName').value = '';
+            document.getElementById('assignmentDeadline').value = '';
+            updateScheduleDisplay();
+        }
+
+        function addExam() {
+            const courseId = document.getElementById('examCourseSelect').value;
+            const examDate = document.getElementById('examDate').value;
+
+            if (!courseId) {
+                alert('Please select a course');
+                return;
+            }
+            if (!examDate) {
+                alert('Please select an exam date');
+                return;
+            }
+
+            exams.push({
+                id: Date.now(),
+                courseId: parseInt(courseId),
+                date: new Date(examDate)
+            });
+
+            document.getElementById('examDate').value = '';
+            updateScheduleDisplay();
+        }
+
+        function updateProfileImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('userImage').src = e.target.result;
+                    document.getElementById('editLabel').textContent = "Edit Profile";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateCourseSelects() {
+            const courseSelects = [
+                document.getElementById('courseSelect'),
+                document.getElementById('examCourseSelect'),
+                document.getElementById('editStudyBlockCourse')
+            ];
+
+            courseSelects.forEach(select => {
+                select.innerHTML = '<option value="">Select Course</option>';
+                courses.forEach(course => {
+                    select.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+                });
+            });
+        }
+
+        function generateSchedule() {
+            // Check if there are any courses, assignments, or exams
+            if (courses.length === 0 || (assignments.length === 0 && exams.length === 0)) {
+                alert('Please add at least one course and one assignment or exam');
+                return;
+            }
+
+            const allTasks = [
+                ...assignments.map(a => ({ ...a, type: 'assignment' })),
+                ...exams.map(e => ({ ...e, type: 'exam' }))
+            ].sort((a, b) => {
+                const dateA = a.type === 'assignment' ? a.deadline : a.date;
+                const dateB = b.type === 'assignment' ? b.deadline : b.date;
+                return dateA - dateB;
+            });
+
+            studyBlocks = [];
+            allTasks.forEach(task => {
+                const course = courses.find(c => c.id === task.courseId);
+                const taskDate = task.type === 'assignment' ? task.deadline : task.date;
+                const daysUntil = Math.ceil((taskDate - new Date()) / (1000 * 60 * 60 * 24));
+
+                if (daysUntil > 0) {
+                    const studyHoursPerDay = task.type === 'exam' ? 2 : 1;
+                    for (let i = 0; i < Math.min(daysUntil, 7); i++) {  // Limit to 7 days of study blocks
+                        const studyDate = new Date();
+                        studyDate.setDate(studyDate.getDate() + i);
+                        studyBlocks.push({
+                            course: course.name,
+                            date: studyDate,
+                            hours: studyHoursPerDay,
+                            task: task.type === 'assignment' ? task.name : 'Exam preparation'
+                        });
+                    }
+                }
+            });
+
+            updateScheduleDisplay();
+        }
+
+        function openEditScheduleForm() {
+            if (!studyBlocks.length) {
+                alert("No study schedule available to edit.");
+                return;
+            }
+
+            const firstBlock = studyBlocks[0];
+            const editForm = document.getElementById('editScheduleForm');
+
+            // Populate the edit form with the first study block
+            document.getElementById('editStudyBlockCourse').value = courses.find(c => c.name === firstBlock.course)?.id || '';
+            document.getElementById('editStudyBlockDate').value = firstBlock.date.toISOString().split('T')[0];
+            document.getElementById('editStudyBlockHours').value = firstBlock.hours;
+            document.getElementById('editStudyBlockTask').value = firstBlock.task;
+
+            // Show the form
+            editForm.style.display = 'block';
+        }
+
+        function saveEditedStudyBlock() {
+            const courseId = parseInt(document.getElementById('editStudyBlockCourse').value);
+            const date = new Date(document.getElementById('editStudyBlockDate').value);
+            const hours = parseInt(document.getElementById('editStudyBlockHours').value);
+            const task = document.getElementById('editStudyBlockTask').value.trim();
+
+            if (!courseId || !date || !hours || !task) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const course = courses.find(c => c.id === courseId);
+            studyBlocks[0] = {  // Always edit the first block for simplicity
+                course: course.name,
+                date: date,
+                hours: hours,
+                task: task
+            };
+
+            document.getElementById('editScheduleForm').style.display = 'none';
+            updateScheduleDisplay();
+        }
+
+        function updateScheduleDisplay() {
+            const container = document.getElementById('scheduleContainer');
+            let html = '';
+
+            if (courses.length > 0) {
+                html += '<h2>Courses</h2>';
+                courses.forEach(course => {
+                    html += `<div class="course-item"><h3>${course.name}</h3></div>`;
+                });
+            }
+
+            if (assignments.length > 0) {
+                html += '<h2>Assignments</h2>';
+                assignments.forEach(assignment => {
+                    const course = courses.find(c => c.id === assignment.courseId);
+                    html += `<div class="assignment-item">
+                <h3>${assignment.name}</h3>
+                <p>Course: ${course ? course.name : 'Unknown'}</p>
+                <p class="deadline">Deadline: ${assignment.deadline.toLocaleString()}</p>
+            </div>`;
+                });
+            }
+
+            if (exams.length > 0) {
+                html += '<h2>Exams</h2>';
+                exams.forEach(exam => {
+                    const course = courses.find(c => c.id === exam.courseId);
+                    html += `<div class="exam-item">
+                <h3>${course ? course.name : 'Unknown'} Exam</h3>
+                <p class="deadline">Date: ${exam.date.toLocaleString()}</p>
+            </div>`;
+                });
+            }
+
+            if (studyBlocks.length > 0) {
+                html += '<h2>Study Schedule</h2>';
+                studyBlocks.forEach(block => {
+                    html += `<div class="study-block">
+                <h3>${block.course}</h3>
+                <p>Date: ${block.date.toDateString()}</p>
+                <p>Hours: ${block.hours}</p>
+                <p>Task: ${block.task}</p>
+            </div>`;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Initialize course selects on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCourseSelects();
+        });
+    </script>
+</body>
+
+</html>

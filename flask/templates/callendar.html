@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Calendar & Analytics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <h2>Study Calendar</h2>
+                <div class="calendar-nav">
+                    <button onclick="previousMonth()">Previous</button>
+                    <button onclick="nextMonth()">Next</button>
+                </div>
+            </div>
+            <table class="calendar" id="calendar">
+                <thead>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body"></tbody>
+            </table>
+        </div>
+
+        <div class="sidebar">
+            <div class="add-task">
+                <h3>Add Task</h3>
+                <form class="task-form" onsubmit="addTask(event)">
+                    <input type="text" id="taskTitle" placeholder="Task Title" required>
+                    <input type="date" id="taskDate" required>
+                    <select id="taskPriority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                    <button type="submit">Add Task</button>
+                </form>
+            </div>
+
+            <div class="analytics">
+                <h3>Analytics</h3>
+                <div>
+                    <p>Monthly Progress</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="monthlyProgress"></div>
+                    </div>
+                    
+                    <p>Tasks Completed: <span id="completionRate">0%</span></p>
+                </div>
+                
+                <div class="chart-container" id="weeklyChart"></div>
+            </div>
+            <div >
+                <a href="{{url_for('chart')}}"><button class="dashboard-button" onclick="opendashboard()">Dashboard</button></a>
+            </div>
+
+            <div class="reminders">
+                <h3>Upcoming Reminders</h3>
+                <ul class="reminder-list" id="reminderList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js">
+    </script>
+</body>
+</html>

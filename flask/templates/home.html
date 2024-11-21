@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Study Planner</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h1>Study Planner
+                <a href="{{url_for('calender')}}">
+                    <div class="left-side"><button class="calendar-button" onclick="openCalendar()">📅 Calendar</button>
+                    </div>
+                </a>
+
+                <a href="{{url_for('pomodoro')}}">
+                    <div class="left-side"><button class="timer" onclick="openCalendar()">📅 Timer</button>
+                    </div>
+                </a>
+
+            </h1>
+
+            <!-- Course Form -->
+            <div class="form-group">
+                <label>Add Course</label>
+                <input type="text" id="courseName" placeholder="Course Name">
+                <button onclick="addCourse()">Add Course</button>
+            </div>
+
+            <!-- Assignment Form -->
+            <div class="form-group">
+                <label>Add Assignment</label>
+                <select id="courseSelect">
+                    <option value="">Select Course</option>
+                </select>
+                <input type="text" id="assignmentName" placeholder="Assignment Name">
+                <input type="datetime-local" id="assignmentDeadline">
+                <button onclick="addAssignment()">Add Assignment</button>
+            </div>
+
+            <!-- Exam Form -->
+            <div class="form-group">
+                <label>Add Exam</label>
+                <select id="examCourseSelect">
+                    <option value="">Select Course</option>
+                </select>
+                <input type="datetime-local" id="examDate">
+                <button onclick="addExam()">Add Exam</button>
+            </div>
+
+            <button onclick="generateSchedule()">Generate Study Schedule</button>
+            <p>&nbsp;</p>
+            <button onclick="saveDataToBackend()">Save Data</button>
+        </div>
+
+        <div class="display-section">
+            <div class="user-profile">
+                <img id="userImage" src="https://via.placeholder.com/100?text=Add+Profile" alt="Add Profile">
+                <input type="file" id="uploadImage" accept="image/*" onchange="updateProfileImage(event)">
+                <label for="uploadImage" id="editLabel">Add Profile</label>
+            </div>
+            <h1>Your Schedule</h1>
+            <div class="schedule-container" id="scheduleContainer">
+                <!-- ider schedule display hoga -->
+            </div>
+        </div>
+    </div>
+
+    <script src="home.js">
+
+    </script>
+</body>
+
+</html>

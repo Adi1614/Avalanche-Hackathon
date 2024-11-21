@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin:5px;
+        }
+
+        #charts-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .chart-box {
+            width: 30%;
+        }
+
+        .tasks-container {
+            margin-top: 20px;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #1e1e2f;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tasks-container h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color:#1e1e2f;
+        }
+
+        .task {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            font-size: 25px;
+            color:#ddd;
+
+        }
+
+        .task:last-child {
+            border-bottom: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .chart-border {
+    border: 2px solid #ffffff; /* White border for contrast */
+    border-radius: 8px;       /* Rounded corners */
+    padding: 10px;            /* Space between the canvas and border */
+    background-color: #1e1e2f; /* Background color for chart container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
+    }
+
+    .controls{
+                padding-top: 100px;
+    }
+
+    
+    </style>
+</head>
+<body>
+
+    <h1 style="color: #ddd;font-size: 60px;">Dashboard</h1>
+    <div id="charts-container">
+        <div class="chart-box">
+            <!-- Add a bordered container -->
+            <div class="chart-border">
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="tasks-container">
+                <h2 style="color: #ddd;">Tasks</h2>
+                <div class="task"><button onclick="updateChartforassignments()"> Assignment </button></div>
+                <div class="task"><button onclick="updateChartforcourses()"> Courses</button></div>
+               
+
+            </div>
+        </div>
+        <div class="chart-box">
+            <!-- Add a bordered container -->
+            <div class="chart-border">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="controls">
+        <input type="number" id="data1" placeholder="Data 1" value="" style="background-color: #1e1e2f;">
+        <input type="number" id="data2" placeholder="Data 2" value="" style="background-color: #1e1e2f;">
+        <input type="number" id="data3" placeholder="Data 3" value="" style="background-color: #1e1e2f;">
+        <!-- <button onclick="updateCharts()">Update Graphs</button> -->
+    </div> 
+    <div class="bg">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </div>
+    <script>
+        // Bar Chart Configuration
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Task completed', 'Task incomplete', 'in progress',],
+                datasets: [{
+                    label: 'data',
+                    data: [10, 20, 30], // Initial data
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Pie Chart Configuration
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        const pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Task completed', 'Task incomplete', 'in progress',],
+                datasets: [{
+                    label: 'status',
+                    data: [10, 20, 30 ], // Initial data
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 172, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        function updateChartforassignments() {
+            const data1 = parseFloat(document.getElementById('data1').value);
+            const data2 = parseFloat(document.getElementById('data2').value);
+            const data3 = parseFloat(document.getElementById('data3').value);
+            
+
+            const newData = [12,30,75];
+
+            // Update Bar Chart
+            barChart.data.datasets[0].data = newData;
+            barChart.update();
+
+            // Update Pie Chart
+            pieChart.data.datasets[0].data = newData;
+            pieChart.update();
+        
+        }
+
+        function updateChartforcourses() {
+            const data1 = parseFloat(document.getElementById('data1').value);
+            const data2 = parseFloat(document.getElementById('data2').value);
+            const data3 = parseFloat(document.getElementById('data3').value);
+            
+
+            const newData = [30, 43, 80,];
+
+            // Update Bar Chart
+            barChart.data.datasets[0].data = newData;
+            barChart.update();
+
+            // Update Pie Chart
+            pieChart.data.datasets[0].data = newData;
+            pieChart.update();
+        }
+
+             // Update Charts Function
+        function updateCharts() {
+            const data1 = parseFloat(document.getElementById('data1').value);
+            const data2 = parseFloat(document.getElementById('data2').value);
+            const data3 = parseFloat(document.getElementById('data3').value);
+            
+
+            const newData = [data1,data2,data3];
+
+            // Update Bar Chart
+            barChart.data.datasets[0].data = newData;
+            barChart.update();
+
+            // Update Pie Chart
+            pieChart.data.datasets[0].data = newData;
+            pieChart.update();
+        }
+    </script>
+</body>
+</html>
